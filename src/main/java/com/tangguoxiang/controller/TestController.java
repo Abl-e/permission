@@ -1,9 +1,16 @@
 package com.tangguoxiang.controller;
 
+import com.tangguoxiang.common.JsonData;
+import com.tangguoxiang.param.TestVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.Valid;
 
 /**
  * 测试类
@@ -37,10 +44,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/test")
 @Slf4j
 public class TestController {
-    @RequestMapping("/hello")
+    @RequestMapping("/hello.json")
     @ResponseBody
-    public String hello(){
+    public JsonData hello(){
         log.info("hello");
-        return "hello";
+        throw new RuntimeException("test exception");
+        //return JsonData.success("hello permission");
+    }
+
+    @RequestMapping("/test.json")
+    @ResponseBody
+    public JsonData test(@Valid @RequestBody TestVo vo, BindingResult errors){
+        if(errors.hasErrors()){
+            for (ObjectError error : errors.getAllErrors()) {
+                System.out.println(error.getObjectName()+"--->"+error.getDefaultMessage());
+            }
+            return JsonData.fail("参数错误");
+        }
+        System.out.println(vo);
+        return JsonData.successCode();
     }
 }
