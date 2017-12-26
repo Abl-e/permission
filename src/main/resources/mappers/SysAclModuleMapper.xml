@@ -3,7 +3,7 @@
 <mapper namespace="com.tangguoxiang.dao.SysAclModuleMapper">
   <resultMap id="BaseResultMap" type="com.tangguoxiang.model.SysAclModule">
     <constructor>
-      <arg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="parent_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="level" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -15,6 +15,19 @@
       <arg column="operator_ip" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
+  <sql id="Base_Column_List">
+    id, name, parent_id, level, seq, status, remark, operator, operator_time, operator_ip
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_acl_module
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_acl_module
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
   <insert id="insert" parameterType="com.tangguoxiang.model.SysAclModule">
     insert into sys_acl_module (id, name, parent_id, 
       level, seq, status, 
@@ -92,4 +105,50 @@
       </if>
     </trim>
   </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tangguoxiang.model.SysAclModule">
+    update sys_acl_module
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null">
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorTime != null">
+        operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatorIp != null">
+        operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tangguoxiang.model.SysAclModule">
+    update sys_acl_module
+    set name = #{name,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      level = #{level,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      operator_ip = #{operatorIp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

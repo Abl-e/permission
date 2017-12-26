@@ -3,7 +3,7 @@
 <mapper namespace="com.tangguoxiang.dao.SysLogMapper">
   <resultMap id="BaseResultMap" type="com.tangguoxiang.model.SysLog">
     <constructor>
-      <arg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="type" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="target_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="operator" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -14,7 +14,7 @@
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.tangguoxiang.model.SysLogWithBLOBs">
     <constructor>
-      <arg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="type" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="target_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="operator" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -25,9 +25,24 @@
       <arg column="new_value" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
     </constructor>
   </resultMap>
+  <sql id="Base_Column_List">
+    id, type, target_id, operator, operator_time, operator_ip, status
+  </sql>
   <sql id="Blob_Column_List">
     old_value, new_value
   </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
   <insert id="insert" parameterType="com.tangguoxiang.model.SysLogWithBLOBs">
     insert into sys_log (id, type, target_id, 
       operator, operator_time, operator_ip, 
@@ -99,4 +114,56 @@
       </if>
     </trim>
   </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tangguoxiang.model.SysLogWithBLOBs">
+    update sys_log
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="targetId != null">
+        target_id = #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorTime != null">
+        operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatorIp != null">
+        operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="oldValue != null">
+        old_value = #{oldValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="newValue != null">
+        new_value = #{newValue,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.tangguoxiang.model.SysLogWithBLOBs">
+    update sys_log
+    set type = #{type,jdbcType=INTEGER},
+      target_id = #{targetId,jdbcType=INTEGER},
+      operator = #{operator,jdbcType=VARCHAR},
+      operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      old_value = #{oldValue,jdbcType=LONGVARCHAR},
+      new_value = #{newValue,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tangguoxiang.model.SysLog">
+    update sys_log
+    set type = #{type,jdbcType=INTEGER},
+      target_id = #{targetId,jdbcType=INTEGER},
+      operator = #{operator,jdbcType=VARCHAR},
+      operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>
